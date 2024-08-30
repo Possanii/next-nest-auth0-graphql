@@ -1,17 +1,19 @@
 import { AuthorizationGuard } from '@/auth/authorization/authorization.guard';
 import { CurrentUser, IAuthUser } from '@/auth/current-user';
+import { CustomersService } from '@/services/customers.service';
 import { ProductsService } from '@/services/products.service';
 import { PurchasesService } from '@/services/purchases.service';
-import { UseGuards } from '@nestjs/common';
+import { BadRequestException, UseGuards } from '@nestjs/common';
 import {
   Args,
   Mutation,
-  Parent,
   Query,
   ResolveField,
   Resolver,
+  Root,
 } from '@nestjs/graphql';
 import { CreatePurchaseInput } from '../inputs/create-purchase-input';
+import { Customer } from '../models/customer';
 import { Product } from '../models/product';
 import { Purchase } from '../models/purchase';
 
@@ -20,6 +22,7 @@ export class PurchasesResolver {
   constructor(
     private purchasesService: PurchasesService,
     private productsService: ProductsService,
+    private customersService: CustomersService,
   ) {}
 
   @Query(() => [Purchase])
@@ -28,20 +31,33 @@ export class PurchasesResolver {
     return this.purchasesService.listAllPurchases();
   }
 
-  @ResolveField(() => Product)
-  product(@Parent() purchase: Purchase) {
-    return this.productsService.getProductById(purchase.productId);
-  }
-
   @Mutation(() => Purchase)
   @UseGuards(AuthorizationGuard)
-  createPurchase(
+  async createPurchase(
     @Args('data') { productId }: CreatePurchaseInput,
     @CurrentUser() user: IAuthUser,
   ) {
+    const customer = await this.customersService.getCustomerByAuthUserId(
+      user.sub,
+    );
+
+    if (!customer) {
+      throw new BadRequestException('Customer not found.');
+    }
+
     return this.purchasesService.createPurchase({
-      customerId: user.sub,
+      customerId: customer.id,
       productId,
     });
+  }
+
+  @ResolveField(() => Product)
+  async product(@Root() purchase: Purchase) {
+    return await this.productsService.getProductById(purchase.productId);
+  }
+
+  @ResolveField(() => Customer)
+  async customer(@Root() purchase: Purchase) {
+    return await this.customersService.getCustomerById(purchase.customerId);
   }
 }

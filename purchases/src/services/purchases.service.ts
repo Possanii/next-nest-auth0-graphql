@@ -29,16 +29,10 @@ export class PurchasesService {
       throw new BadRequestException('Product not found');
     }
 
-    const customer = await this.prisma.customer.findUnique({
-      where: {
-        authUserId: customerId,
-      },
-    });
-
     return await this.prisma.purchase.create({
       data: {
         productId,
-        customerId: customer.id,
+        customerId,
       },
     });
   }

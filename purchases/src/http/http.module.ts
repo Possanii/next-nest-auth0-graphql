@@ -1,5 +1,6 @@
 import { AuthModule } from '@/auth/auth.module';
 import { DatabaseModule } from '@/database/database.module';
+import { CustomersService } from '@/services/customers.service';
 import { ProductsService } from '@/services/products.service';
 import { PurchasesService } from '@/services/purchases.service';
 import { UtilsService } from '@/utils/utils.service';
@@ -26,6 +27,7 @@ import { PurchasesResolver } from './graphql/resolvers/purchases.resolver';
     UtilsService,
     ProductsService,
     PurchasesService,
+    CustomersService,
 
     //Resolvers
     ProductsResolver,
