@@ -1,11 +1,15 @@
+import { AuthModule } from '@/auth/auth.module';
+import { DatabaseModule } from '@/database/database.module';
+import { ProductsService } from '@/services/products.service';
+import { PurchasesService } from '@/services/purchases.service';
+import { UtilsService } from '@/utils/utils.service';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'node:path';
-import { AuthModule } from '../auth/auth.module';
-import { DatabaseModule } from '../database/database.module';
-import { TestResolver } from './test.resolver';
+import { ProductsResolver } from './graphql/resolvers/products.resolver';
+import { PurchasesResolver } from './graphql/resolvers/purchases.resolver';
 
 @Module({
   imports: [
@@ -17,6 +21,15 @@ import { TestResolver } from './test.resolver';
       driver: ApolloDriver,
     }),
   ],
-  providers: [TestResolver],
+  providers: [
+    //Services
+    UtilsService,
+    ProductsService,
+    PurchasesService,
+
+    //Resolvers
+    ProductsResolver,
+    PurchasesResolver,
+  ],
 })
 export class HttpModule {}
