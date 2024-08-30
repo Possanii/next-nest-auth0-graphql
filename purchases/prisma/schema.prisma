@@ -16,6 +16,8 @@ datasource db {
 model Customer {
   id String @id @default(uuid())
 
+  authUserId String @unique
+
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
@@ -45,9 +47,9 @@ model Purchase {
   createdAt DateTime       @default(now())
   updatedAt DateTime       @default(now()) @updatedAt
 
-  customer   Customer @relation(fields: [customerId], references: [id])
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: NoAction)
   customerId String
 
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id], onDelete: NoAction)
   productId String
 }
