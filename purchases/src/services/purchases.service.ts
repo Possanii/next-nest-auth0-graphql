@@ -6,9 +6,31 @@ interface ICreatePurchaseParams {
   productId: string;
 }
 
+interface IGetPurchaseByIdParams {
+  purchaseId: string;
+  customerId: string;
+}
+
 @Injectable()
 export class PurchasesService {
   constructor(private prisma: PrismaService) {}
+
+  async getPurchaseById({ purchaseId, customerId }: IGetPurchaseByIdParams) {
+    return await this.prisma.purchase.findUnique({
+      where: {
+        id: purchaseId,
+        customerId,
+      },
+    });
+  }
+
+  async getPurchaseByCustomerId(customerId: string) {
+    return await this.prisma.purchase.findMany({
+      where: {
+        customerId,
+      },
+    });
+  }
 
   listAllPurchases() {
     return this.prisma.purchase.findMany({

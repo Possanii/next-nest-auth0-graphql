@@ -38,6 +38,9 @@ type Customer {
 type Query {
   products: [Product!]!
   purchases: [Purchase!]!
+  getPurchaseById(id: String!): Purchase!
+  getPurchaseByCustomerId: Purchase!
+  me: Customer!
 }
 
 type Mutation {

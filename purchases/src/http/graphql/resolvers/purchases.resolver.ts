@@ -31,10 +31,10 @@ export class PurchasesResolver {
     return this.purchasesService.listAllPurchases();
   }
 
-  @Mutation(() => Purchase)
+  @Query(() => Purchase)
   @UseGuards(AuthorizationGuard)
-  async createPurchase(
-    @Args('data') { productId }: CreatePurchaseInput,
+  async getPurchaseById(
+    @Args('id') id: string,
     @CurrentUser() user: IAuthUser,
   ) {
     const customer = await this.customersService.getCustomerByAuthUserId(
@@ -43,6 +43,42 @@ export class PurchasesResolver {
 
     if (!customer) {
       throw new BadRequestException('Customer not found.');
+    }
+
+    return this.purchasesService.getPurchaseById({
+      purchaseId: id,
+      customerId: customer.id,
+    });
+  }
+
+  @Query(() => Purchase)
+  @UseGuards(AuthorizationGuard)
+  async getPurchaseByCustomerId(@CurrentUser() user: IAuthUser) {
+    const customer = await this.customersService.getCustomerByAuthUserId(
+      user.sub,
+    );
+
+    if (!customer) {
+      throw new BadRequestException('Customer not found.');
+    }
+
+    return this.purchasesService.getPurchaseByCustomerId(customer.id);
+  }
+
+  @Mutation(() => Purchase)
+  @UseGuards(AuthorizationGuard)
+  async createPurchase(
+    @Args('data') { productId }: CreatePurchaseInput,
+    @CurrentUser() user: IAuthUser,
+  ) {
+    let customer = await this.customersService.getCustomerByAuthUserId(
+      user.sub,
+    );
+
+    if (!customer) {
+      customer = await this.customersService.createCustomer({
+        authUserId: user.sub,
+      });
     }
 
     return this.purchasesService.createPurchase({

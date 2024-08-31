@@ -18,9 +18,15 @@ export class ProductsService {
   }
 
   getProductById(id: string) {
-    return this.prisma.product.findUnique({
+    const product = this.prisma.product.findUnique({
       where: { id },
     });
+
+    if (!product) {
+      throw new BadRequestException('Product not found.');
+    }
+
+    return product;
   }
 
   async createProduct({ title }: ICreateProductParams) {
