@@ -4,6 +4,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 
 interface ICreateCourseParams {
   title: string;
+  slug?: string;
 }
 
 @Injectable()
@@ -25,9 +26,18 @@ export class CoursesService {
     });
   }
 
-  async createCourse({ title }: ICreateCourseParams) {
-    const slug = this.utils.createSlug(title);
+  getCourseBySlug(slug: string) {
+    return this.prisma.course.findUnique({
+      where: {
+        slug,
+      },
+    });
+  }
 
+  async createCourse({
+    title,
+    slug = this.utils.createSlug(title),
+  }: ICreateCourseParams) {
     const courseWithSameSlug = await this.prisma.course.findUnique({
       where: {
         slug,
