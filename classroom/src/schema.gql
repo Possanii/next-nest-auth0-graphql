@@ -31,5 +31,6 @@ type Course {
 
 type Query {
   students: [Student!]!
+  enrollments: [Enrollment!]!
   courses: [Course!]!
 }

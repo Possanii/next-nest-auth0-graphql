@@ -1,5 +1,6 @@
 import { AuthModule } from '@/auth/auth.module';
 import { CoursesService } from '@/services/courses.service';
+import { EnrollmentsService } from '@/services/enrollments.service';
 import { StudentsService } from '@/services/students.service';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
@@ -29,6 +30,7 @@ import { StudentsResolver } from './graphql/resolvers/students.resolver';
 
     //Services
     StudentsService,
+    EnrollmentsService,
     CoursesService,
   ],
 })
