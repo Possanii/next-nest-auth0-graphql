@@ -5,14 +5,30 @@ import { Injectable } from '@nestjs/common';
 export class StudentsService {
   constructor(private prisma: PrismaService) {}
 
-  listAllStudents() {
-    return this.prisma.student.findMany();
-  }
-
   getStudentById(id: string) {
     return this.prisma.student.findUnique({
       where: {
         id,
+      },
+    });
+  }
+
+  getStudentByAuthUserId(authUserId: string) {
+    return this.prisma.student.findUnique({
+      where: {
+        authUserId,
+      },
+    });
+  }
+
+  listAllStudents() {
+    return this.prisma.student.findMany();
+  }
+
+  createStudent(authUserId: string) {
+    return this.prisma.student.create({
+      data: {
+        authUserId,
       },
     });
   }
