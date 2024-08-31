@@ -4,4 +4,8 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class CoursesService {
   constructor(private prisma: PrismaService) {}
+
+  listAllCourses() {
+    return this.prisma.course.findMany();
+  }
 }
