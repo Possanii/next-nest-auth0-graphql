@@ -1,5 +1,6 @@
 import { AuthModule } from '@/auth/auth.module';
 import { DatabaseModule } from '@/database/database.module';
+import { MessagingModule } from '@/messaging/messaging.module';
 import { CustomersService } from '@/services/customers.service';
 import { ProductsService } from '@/services/products.service';
 import { PurchasesService } from '@/services/purchases.service';
@@ -18,6 +19,7 @@ import { PurchasesResolver } from './graphql/resolvers/purchases.resolver';
     ConfigModule,
     AuthModule,
     DatabaseModule,
+    MessagingModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       driver: ApolloDriver,
