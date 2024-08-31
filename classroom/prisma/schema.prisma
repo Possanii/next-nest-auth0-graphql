@@ -48,4 +48,6 @@ model Enrollment {
 
   course   Course @relation(fields: [courseId], references: [id])
   courseId String
+
+  @@unique([courseId, studentId])
 }
